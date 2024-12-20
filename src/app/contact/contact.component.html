@@ -1,0 +1,142 @@
+<div class="container mt-4">
+  <!-- Contacts Table -->
+  <h2 class="mb-4">Contacts App</h2>
+  <button class="btn btn-success btn-sm mb-4" data-bs-toggle="modal"
+  data-bs-target="#contactModal"
+  (click)="openModal(null)">New</button>
+  <!-- Search Input -->
+  <input type="text" [(ngModel)]="searchKeyword" (ngModelChange)="searchContacts()" placeholder="Search Contacts..." class="form-control mb-3" />
+  <table class="table table-bordered table-hover contact-table" *ngIf="filteredContacts.length > 0">
+    <thead>
+      <tr>
+        <th (click)="sortContacts('id')">#ID <span *ngIf="sortColumn === 'id'">
+          {{ sortDirection ? '▲' : '▼' }}
+        </span></th>
+        <th (click)="sortContacts('firstName')">First Name <span *ngIf="sortColumn === 'firstName'">
+          {{ sortDirection ? '▲' : '▼' }}
+        </span></th>
+        <th (click)="sortContacts('lastName')">Last Name <span *ngIf="sortColumn === 'lastName'">
+          {{ sortDirection ? '▲' : '▼' }}
+        </span></th>
+        <th (click)="sortContacts('email')">Email <span *ngIf="sortColumn === 'email'">
+          {{ sortDirection ? '▲' : '▼' }}
+        </span></th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contact of filteredContacts; let i = index">
+        <td>{{ contact.id }}</td>
+        <td>{{ contact.firstName }}</td>
+        <td>{{ contact.lastName }}</td>
+        <td>{{ contact.email }}</td>
+        <td>
+          <button
+            class="btn btn-primary btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#contactModal"
+            (click)="openModal(contact)"
+          >Edit</button>
+        </td>
+        <td><button class="btn btn-danger btn-sm"
+          (click)="deleteContact(contact.id)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Bootstrap Modal -->
+  <div
+    class="modal fade"
+    id="contactModal"
+    tabindex="-1"
+    aria-labelledby="contactModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="contactModalLabel">
+            {{ editMode ? 'Edit Contact' : 'Add Contact' }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <div class="modal-body">
+            <div class="mb-3">
+              <input
+                type="text"
+                formControlName="firstName"
+                placeholder="First Name"
+                class="form-control"
+              />
+              <small
+                *ngIf="
+                  contactForm.get('firstName')?.touched &&
+                  contactForm.get('firstName')?.invalid
+                "
+                class="text-danger"
+              >
+                First name is required.
+              </small>
+            </div>
+            <div class="mb-3">
+              <input
+                type="text"
+                formControlName="lastName"
+                placeholder="Last Name"
+                class="form-control"
+              />
+              <small
+                *ngIf="
+                  contactForm.get('lastName')?.touched &&
+                  contactForm.get('lastName')?.invalid
+                "
+                class="text-danger"
+              >
+                Last name is required.
+              </small>
+            </div>
+            <div class="mb-3">
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="Email"
+                class="form-control"
+              />
+              <small
+                *ngIf="
+                  contactForm.get('email')?.touched &&
+                  contactForm.get('email')?.invalid
+                "
+                class="text-danger"
+              >
+                Enter a valid email.
+              </small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="contactForm.invalid"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
